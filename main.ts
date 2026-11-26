@@ -1,53 +1,64 @@
-// DataNusa hand-in program (Node 22, standard library only).
-// The site is this directory's app/ folder: plain static files a browser
-// opens at app/index.html (ES modules, CSS, no build step), its content held
-// in its own files — nothing it runs, styles or shows loads over the network.
-// The program copies app/ and screenshots/ from beside this file to the
-// output directory and writes output/dossier.json, the summary the judge
-// reads (screenshots, the first load's files and bytes, and the source), with
-// the vendored make.fun library. Leave vendor/makefun-frontend.ts as it is:
-// the scorer requires dossier.json to be byte for byte what its own copy
-// writes.
-//
-// Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
-//   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
-
 import { chmodSync, cpSync, existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-frontend.ts';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
+
 const out = process.env.MAKEFUN_OUTPUT_DIR;
-if (!out) throw new Error('MAKEFUN_OUTPUT_DIR is not set: this program writes only to the output directory it is given');
+if (!out) {
+  throw new Error('MAKEFUN_OUTPUT_DIR is not set');
+}
 
-mkdirSync(out, { recursive: true });
-cpSync(join(here, 'app'), join(out, 'app'), { recursive: true });
-mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+// The grader runs as an unprivileged user and the output directory itself
+// may be owned by someone else (e.g. root), so chmod on it throws EPERM.
+// Every chmod below is best-effort: files and directories this program
+// creates are owned by it, so their chmods succeed and the grader can read
+// them; a failed chmod on the pre-existing top-level output dir must never
+// kill the run.
+function safeChmod(path: string, mode: number): void {
+  try {
+    chmodSync(path, mode);
+  } catch {
+    // Output dir may not be owned by us; files we created are still chmodded.
+  }
+}
 
-// The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
-// scorer would refuse (more than 4 screenshots or one over 256 KiB; more than 993 files and directories in app/ or
-// 16 MiB of app files: app/ counts beside /output's own 1000-entry cap, its screenshots/ and dossier.json).
-writeFileSync(
-  join(out, 'dossier.json'),
-  buildDossier(out, { text_max_bytes: 163840, screenshots: { max: 4, max_bytes: 262144 }, app_max_files: 993, app_max_bytes: 16777216 }),
-);
-
-// The VM's umask makes new files 0660, which the grader cannot read: set
-// every output file to 0644 and every output directory to 0755 before exiting.
-function fixModes(dir) {
+function fixModes(dir: string): void {
   for (const name of readdirSync(dir)) {
-    const path = join(dir, name);
-    const st = statSync(path);
-    if (st.isDirectory()) {
-      chmodSync(path, 0o755);
-      fixModes(path);
-    } else if (st.isFile()) {
-      chmodSync(path, 0o644);
+    const p = join(dir, name);
+    if (statSync(p).isDirectory()) {
+      safeChmod(p, 0o755);
+      fixModes(p);
+    } else {
+      safeChmod(p, 0o644);
     }
   }
 }
-chmodSync(out, 0o755);
-fixModes(out);
 
+mkdirSync(out, { recursive: true });
+safeChmod(out, 0o755);
+
+cpSync(join(here, 'app'), join(out, 'app'), { recursive: true });
+
+mkdirSync(join(out, 'screenshots'), { recursive: true });
+if (existsSync(join(here, 'screenshots'))) {
+  cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+}
+
+writeFileSync(
+  join(out, 'dossier.json'),
+  buildDossier(out, {
+    text_max_bytes: 163840,
+    screenshots: { max: 4, max_bytes: 262144 },
+    app_max_files: 993,
+    app_max_bytes: 16777216,
+  }),
+);
+
+// Normalize modes on everything this program created (0644 files, 0755
+// dirs) so the grader, running as another user, can read the output.
+// The top-level output dir chmod inside fixModes is best-effort via
+// safeChmod and cannot throw.
+safeChmod(out, 0o755);
+fixModes(out);
