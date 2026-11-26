@@ -1,0 +1,260 @@
+/* DataNusa — style.css. One stylesheet for the whole site:
+   layout, header and nav, cards, charts, tables, filters and phone layout. */
+
+:root {
+  --ink: #16302e;
+  --muted: #5a6b69;
+  --teal: #0e6b6b;
+  --teal-dark: #0a4f4f;
+  --orange: #e07a2f;
+  --blue: #2f6fb2;
+  --paper: #f7f5ef;
+  --card: #ffffff;
+  --line: #e2ddd2;
+  --accent-soft: #e3efec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.55;
+}
+
+a { color: var(--teal); }
+
+/* Header and navigation */
+
+.site-header {
+  background: var(--teal-dark);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(10, 40, 38, 0.25);
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 9px;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 800;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+}
+
+.brand-text { display: flex; flex-direction: column; line-height: 1.15; }
+.brand-text strong { font-size: 20px; letter-spacing: 0.3px; }
+.brand-text small { font-size: 12px; color: #bcd8d3; }
+
+.main-nav { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.nav-link {
+  color: #d7e8e4;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.nav-link:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.nav-link.active { background: #fff; color: var(--teal-dark); }
+
+/* Page layout */
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--orange);
+  margin: 0 0 6px;
+}
+
+h1 { font-size: 38px; line-height: 1.12; margin: 0 0 10px; letter-spacing: -0.5px; }
+h2 { font-size: 24px; margin: 0 0 8px; letter-spacing: -0.3px; }
+h3 { font-size: 18px; margin: 0 0 6px; }
+
+.page-intro, .hero-intro { font-size: 18px; color: var(--muted); max-width: 720px; margin: 0; }
+
+.hero { padding: 14px 0 26px; }
+.hero-intro { font-size: 19px; }
+.page-head { padding: 6px 0 22px; }
+
+/* KPI and fact cards */
+
+.kpi-grid, .fact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0 0 26px;
+}
+
+.kpi-card, .fact-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+a.kpi-card { text-decoration: none; color: inherit; }
+a.kpi-card:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(14, 107, 107, 0.12); }
+
+.kpi-label, .fact-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); }
+.kpi-value, .fact-value { font-size: 30px; font-weight: 800; color: var(--teal-dark); letter-spacing: -0.5px; }
+.kpi-note, .fact-note { font-size: 13px; color: var(--muted); }
+
+/* Panels and charts */
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin: 0 0 22px;
+}
+
+.panel-intro { color: var(--muted); margin: 0 0 16px; max-width: 760px; }
+.panel-link { color: var(--muted); font-size: 14px; margin: 14px 0 0; }
+
+.chart-svg { width: 100%; height: auto; display: block; }
+.chart-svg .grid { stroke: #e8e4da; stroke-width: 1; }
+.chart-svg .axis-label { fill: var(--muted); font-size: 13px; font-family: inherit; }
+.chart-svg .bar-value { fill: var(--ink); font-size: 13px; font-weight: 700; font-family: inherit; }
+.chart-svg .line { stroke-width: 3; }
+.chart-svg .area { opacity: 0.08; }
+.chart-svg .dot { stroke: #fff; stroke-width: 2; }
+
+.donut-wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.donut-svg { width: 220px; height: 220px; flex: none; }
+.donut-total { font-size: 30px; font-weight: 800; fill: var(--teal-dark); font-family: inherit; }
+.donut-caption { font-size: 13px; fill: var(--muted); font-family: inherit; }
+.donut-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 9px; vertical-align: -1px; }
+
+.hbar-list { display: flex; flex-direction: column; gap: 9px; }
+.hbar-row { display: grid; grid-template-columns: 170px 1fr 74px; align-items: center; gap: 12px; }
+.hbar-label { font-size: 14px; font-weight: 600; }
+.hbar-track { background: #efece4; border-radius: 6px; height: 14px; overflow: hidden; }
+.hbar-fill { background: var(--teal); height: 100%; border-radius: 6px; }
+.hbar-value { font-size: 14px; font-weight: 700; text-align: right; color: var(--teal-dark); }
+
+/* Tiles, tables, filters, tabs */
+
+.tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 0 0 22px; }
+.tile {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.tile:hover { border-color: var(--teal); box-shadow: 0 4px 14px rgba(14, 107, 107, 0.12); }
+.tile p { color: var(--muted); margin: 0 0 10px; }
+.tile-arrow { font-weight: 700; color: var(--teal); font-size: 14px; }
+
+.filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 16px; }
+.filter-label { font-weight: 700; }
+.filter-count, .year-detail { color: var(--muted); font-size: 14px; }
+select, .btn {
+  font: inherit;
+  font-size: 15px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+}
+.btn { cursor: pointer; font-weight: 700; background: var(--accent-soft); border-color: #c4d8d3; }
+.btn:hover { background: #d5e7e2; }
+
+.tabs { display: flex; gap: 8px; margin: 0 0 18px; flex-wrap: wrap; }
+.tab {
+  font: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+.tab.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+.tab-panel .panel { margin-bottom: 0; }
+
+.table-wrap { overflow-x: auto; margin-top: 18px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.data-table th, .data-table td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+.data-table th { background: var(--accent-soft); font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.data-table tbody tr:hover { background: #faf8f2; }
+
+.share-list { margin: 16px 0 0; padding-left: 20px; color: var(--muted); }
+.share-list li { margin: 4px 0; }
+
+.source-note { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 12px; margin: 4px 0 0; }
+.chart-slot { margin-top: 4px; }
+
+/* Footer */
+
+.site-footer { border-top: 1px solid var(--line); background: #fff; }
+.footer-inner { max-width: 1080px; margin: 0 auto; padding: 22px 20px 30px; color: var(--muted); font-size: 14px; }
+.footer-inner p { margin: 4px 0; }
+
+/* Phone layout */
+
+@media (max-width: 760px) {
+  h1 { font-size: 29px; }
+  .header-inner { gap: 10px; padding: 10px 14px; }
+  .main-nav { gap: 2px; }
+  .nav-link { padding: 7px 9px; font-size: 14px; }
+  .page { padding: 20px 14px 32px; }
+  .kpi-grid, .fact-grid, .tile-grid { grid-template-columns: 1fr 1fr; }
+  .panel { padding: 18px 16px; }
+  .hbar-row { grid-template-columns: 110px 1fr 60px; gap: 8px; }
+  .donut-wrap { gap: 16px; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid, .fact-grid, .tile-grid { grid-template-columns: 1fr; }
+  .kpi-value, .fact-value { font-size: 26px; }
+}
